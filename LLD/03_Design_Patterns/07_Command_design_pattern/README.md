@@ -75,6 +75,51 @@ We will separate the request (the action) from the receiver (the device that per
 
 4. When you press undo, it pops the last command and calls undo().
 
+
+```
+                                  +----------------------------+
+                                  |     RemoteControl          |        <<Invoker>>
+                                  +----------------------------+
+                                  | - command: Command*        |
+                                  | - history: stack<Command*> |
+                                  +----------------------------+
+                                  | + setCommand(cmd)          |
+                                  | + pressButton()            |
+                                  | + pressUndo()              |
+                                  +----------+-----------------+
+                                             |
+                                             | uses
+                                             v
+                                  +----------------------+
+                                  |      Command         |        <<Interface>>
+                                  +----------------------+
+                                  | + execute() = 0      |
+                                  | + undo() = 0         |
+                                  +----------+-----------+
+                                             ^
+            ---------------------------------------------------------------------
+            |                   |                     |                         |
+            v                   v                     v                         v
++--------------------+ +--------------------+ +--------------------+ +--------------------+
+|  LightOnCommand    | |  LightOffCommand   | |   TVOnCommand      | |   TVOffCommand     |
++--------------------+ +--------------------+ +--------------------+ +--------------------+
+| - light: Light*    | | - light: Light*    | | - tv: TV*          | | - tv: TV*          |
++--------------------+ +--------------------+ +--------------------+ +--------------------+
+| + execute()        | | + execute()        | | + execute()        | | + execute()        |
+| + undo()           | | + undo()           | | + undo()           | | + undo()           |
++--------------------+ +--------------------+ +--------------------+ +--------------------+
+            |                   |                     |                      |
+            | depends on        | depends on          | depends on           | depends on
+            v                   v                     v                      v
+        +----------+         +----------+          +--------+              +--------+
+        |  Light   |         |  Light   |          |  TV    |              |  TV    |
+        +----------+         +----------+          +--------+              +--------+
+        | + on()   |         | + off()  |          | + on() |              | + off()|
+        | + off()  |         | + on()   |          | + off()|              | + on() |
+        +----------+         +----------+          +--------+              +--------+
+             <<Receiver>>                             <<Receiver>>
+```
+
 ---
 
 
