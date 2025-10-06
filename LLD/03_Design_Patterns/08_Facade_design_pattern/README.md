@@ -64,6 +64,38 @@ From the client’s perspective, the system now has just two simple methods:
 - `watchMovie(String movie)`
 - `endMovie()`
 
+
+```
+                                  +-------------------------+
+                                  |   HomeTheaterFacade     |
+                                  +-------------------------+
+                                  | - dvd: DVDPlayer*       |
+                                  | - projector: Projector* |
+                                  | - amp: Amplifier*       |
+                                  | - lights: Lights*       |
+                                  | - screen: Screen*       |
+                                  | - popcorn: PopcornMaker*|
+                                  +-------------------------+
+                                  | + watchMovie(movie)     |
+                                  | + endMovie()            |
+                                  +----------+--------------+
+                                             |
+        --------------------------------------------------------------------------------------------
+        |                 |                   |                 |                 |                 |
+        v                 v                   v                 v                 v                 v
++---------------+ +----------------+ +-----------------+ +---------------+ +---------------+ +----------------+
+|   DVDPlayer   | |   Projector    | |   Amplifier     | |     Lights    | |    Screen     | |  PopcornMaker  |
++---------------+ +----------------+ +-----------------+ +---------------+ +---------------+ +----------------+
+| + on()        | | + on()         | | + on()          | | + dim(level)  | | + down()      | | + on()         |
+| + play(movie) | | + setInput(dvd)| | + setSource(dvd)| | + on()        | | + up()        | | + pop()        |
+| + stop()      | | + off()        | | + setVolume(lvl)| |               | |               | | + off()        |
+| + off()       | +----------------+ | + off()         | +---------------+ +---------------+ +----------------+
++---------------+                    +-----------------+
+
+              Projector --> DVDPlayer
+              Amplifier --> DVDPlayer
+```
+
 ### Benefits of Using Facade
 - Simplified Interface — clients interact with one class instead of many.
 - Reduced Coupling — the client no longer depends directly on subsystems.
